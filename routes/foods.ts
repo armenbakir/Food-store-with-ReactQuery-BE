@@ -151,4 +151,16 @@ router.put("/:id", (req, res) => {
   return res.send(food);
 });
 
+router.delete("/:id", (req, res) => {
+  const food = foods.find((food) => food._id === req.params.id);
+
+  if (!food)
+    return res.status(404).send("The food with the given id was not found");
+
+  const index = foods.indexOf(food);
+  foods.splice(index, 1);
+
+  return res.send(food);
+});
+
 export default router;
