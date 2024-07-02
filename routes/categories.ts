@@ -2,7 +2,7 @@ import express from "express";
 
 const router = express.Router();
 
-interface Category {
+export interface Category {
   _id: string;
   name: string;
 }
