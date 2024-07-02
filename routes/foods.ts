@@ -1,5 +1,6 @@
 import express from "express";
-import { Category } from "./categories";
+import { Category, getCategories } from "./categories";
+import { validate } from "../schemas/Food";
 
 const router = express.Router();
 
@@ -9,6 +10,7 @@ interface Food {
   category: Category;
   numberInStock: number;
   price: number;
+  isFavored?: boolean;
 }
 
 const foods: Food[] = [
@@ -88,6 +90,36 @@ router.get("/:id", (req, res) => {
     return res.status(404).send("The food with the given id was not found");
 
   return res.send(food);
+});
+
+router.post("/", (req, res) => {
+  // validera
+  const validation = validate(req.body);
+
+  if (!validation.success)
+    return res.status(404).send(validation.error.issues[0]);
+
+  // skapa det nya food objektet
+  const category = getCategories().find(
+    (category) => category._id === req.body.categoryId
+  );
+
+  if (!category)
+    return res.status(400).send("Category with the given id was not found.");
+
+  const food: Food = {
+    _id: Date.now().toString(),
+    name: req.body.name,
+    numberInStock: req.body.numberInStock,
+    price: req.body.price,
+    category,
+    isFavored: false,
+  };
+
+  foods.push(food);
+
+  // skicka ut till klienten
+  return res.status(201).send(food);
 });
 
 export default router;

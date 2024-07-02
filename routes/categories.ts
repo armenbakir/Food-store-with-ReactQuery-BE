@@ -22,6 +22,10 @@ const categories: Category[] = [
   },
 ];
 
+export function getCategories() {
+  return categories;
+}
+
 router.get("/", (req, res) => {
   return res.send(categories);
 });
