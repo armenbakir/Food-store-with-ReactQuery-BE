@@ -81,4 +81,13 @@ router.get("/", (req, res) => {
   return res.send(foods);
 });
 
+router.get("/:id", (req, res) => {
+  const food = foods.find((food) => food._id === req.params.id);
+
+  if (!food)
+    return res.status(404).send("The food with the given id was not found");
+
+  return res.send(food);
+});
+
 export default router;
