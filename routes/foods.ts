@@ -113,13 +113,42 @@ router.post("/", (req, res) => {
     numberInStock: req.body.numberInStock,
     price: req.body.price,
     category,
-    isFavored: false,
   };
 
   foods.push(food);
 
   // skicka ut till klienten
   return res.status(201).send(food);
+});
+
+router.put("/:id", (req, res) => {
+  // kolla så att food med id route parametern finns
+  const food = foods.find((food) => food._id === req.params.id);
+
+  if (!food)
+    return res.status(404).send("The food with the given id was not found");
+
+  // validera body
+  const validation = validate(req.body);
+
+  if (!validation.success)
+    return res.status(404).send(validation.error.issues[0]);
+
+  const category = getCategories().find(
+    (category) => category._id === req.body.categoryId
+  );
+
+  if (!category)
+    return res.status(400).send("Category with the given id was not found.");
+
+  // uppdatera food objektet
+  food.name = req.body.name;
+  food.category = category;
+  food.price = req.body.price;
+  food.numberInStock = req.body.numberInStock;
+
+  // skicka ut det uppdaterade food objektet
+  return res.send(food);
 });
 
 export default router;
