@@ -1,32 +1,11 @@
 import express from "express";
+import { PrismaClient } from "@prisma/client";
 
 const router = express.Router();
+const prisma = new PrismaClient();
 
-export interface Category {
-  _id: string;
-  name: string;
-}
-
-const categories: Category[] = [
-  {
-    _id: "clrzmp7xl0000874wma80lh6c",
-    name: "Fruit",
-  },
-  {
-    _id: "clrzmp7xl0001874wozvggz9j",
-    name: "Vegetables",
-  },
-  {
-    _id: "clrzmp7xl0002874wjix0ig0c",
-    name: "Snacks",
-  },
-];
-
-export function getCategories() {
-  return categories;
-}
-
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+  const categories = await prisma.category.findMany();
   return res.send(categories);
 });
 
