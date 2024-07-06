@@ -2,6 +2,7 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { validate } from "../schemas/User";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -28,7 +29,14 @@ router.post("/", async (req, res) => {
     },
   });
 
-  return res.send(user);
+  const { password: p, ...userWithoutPassword } = user;
+
+  const token = jwt.sign(userWithoutPassword, process.env.JWT_SECRET!);
+
+  return res
+    .header("access-control-expose-headers", "x-auth-token")
+    .header("x-auth-token", token)
+    .send(userWithoutPassword);
 });
 
 export default router;
