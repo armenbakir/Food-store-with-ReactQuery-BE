@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
   const validation = validate(req.body);
 
   if (!validation.success)
-    return res.send(400).send(validation.error.issues[0]);
+    return res.send(400).send(validation.error.issues[0].message);
   const user = await prisma.user.findFirst({
     where: { username: req.body.username },
   });

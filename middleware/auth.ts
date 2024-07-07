@@ -1,5 +1,10 @@
+import { User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
-import Jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+
+export interface AuthRequest extends Request {
+  user: Omit<User, "password">;
+}
 
 export default function auth(req: Request, res: Response, next: NextFunction) {
   const token = req.headers["x-auth-token"] as string;
@@ -8,7 +13,11 @@ export default function auth(req: Request, res: Response, next: NextFunction) {
   // verifiera token
 
   try {
-    Jwt.verify(token, process.env.JWT_SECRET!);
+    const user = jwt.verify(token, process.env.JWT_SECRET!) as Omit<
+      User,
+      "password"
+    >;
+    (req as AuthRequest).user = user;
     next();
   } catch (error) {
     return res.status(400).send("Invalid token");

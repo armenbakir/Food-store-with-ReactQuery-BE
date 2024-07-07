@@ -2,11 +2,14 @@ import express from "express";
 import { validate } from "../schemas/Food";
 import { PrismaClient } from "@prisma/client";
 import auth from "../middleware/auth";
+import admin from "../middleware/admin";
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // router.use(auth) Om man vill köra auth middleware på alla endpoints. Men Om man vill bara köra en specifik endpoint skriver man auth i den endpoint man vill.
+
+// Samma sak med router.use(admin)
 
 router.get("/", async (req, res) => {
   const foods = await prisma.food.findMany();
@@ -14,7 +17,10 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", auth, async (req, res) => {
-  const food = await prisma.food.findFirst({ where: { id: req.params.id } });
+  const food = await prisma.food.findFirst({
+    where: { id: req.params.id },
+    include: { category: true },
+  });
 
   if (!food)
     return res.status(404).send("The food with the given id was not found");
@@ -87,7 +93,7 @@ router.put("/:id", auth, async (req, res) => {
   return res.send(updatedFood);
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, admin, async (req, res) => {
   const food = await prisma.food.findFirst({
     where: { id: req.params.id },
   });

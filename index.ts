@@ -11,12 +11,10 @@ const app = express();
 app.use(cors({ origin: "http://localhost:5173" })); // cors middleware
 app.use(express.json()); // express.jason middleware
 
-app.use(checkAuth); // auth middleware
-
-app.use("/api/users", users); // -- // --
-app.use("/api/auth", auth); // -- // --
-app.use("/api/categories", categories); // routete handler middleware
-app.use("/api/foods", foods); // -- // --
+app.use("/api/users", users); //     route handler middleware
+app.use("/api/auth", auth); //              -- // --
+app.use("/api/categories", categories); //  -- // --
+app.use("/api/foods", foods); //            -- // --
 
 const PORT = 5570;
 
