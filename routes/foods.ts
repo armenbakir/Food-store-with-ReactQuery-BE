@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 // Samma sak med router.use(admin)
 
 router.get("/", async (req, res) => {
-  const foods = await prisma.food.findMany();
+  const foods = await prisma.food.findMany({ include: { category: true } });
   return res.send(foods);
 });
 

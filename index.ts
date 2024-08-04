@@ -4,7 +4,6 @@ import foods from "./routes/foods";
 import users from "./routes/users";
 import auth from "./routes/auth";
 import cors from "cors";
-import checkAuth from "./middleware/auth";
 
 const app = express();
 
